@@ -1,0 +1,4 @@
+,dataset,model,classifier,wall_time,process_time,f1_none,accuracy_score
+0,credit,CTABGAN+,BinaryDecisionTreeClassifier,9787.089913558,54471.159782848,[0.99912672 0.        ],0.9982549733260209
+0,credit,CTABGAN+,BinaryAdaBoostClassifier,9787.089913558,54471.159782848,[0.99912672 0.        ],0.9982549733260209
+0,credit,CTABGAN+,BinaryMLPClassifier,9787.089913558,54471.159782848,[0.99912672 0.        ],0.9982549733260209

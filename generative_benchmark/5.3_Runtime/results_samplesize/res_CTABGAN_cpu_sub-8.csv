@@ -1,0 +1,2 @@
+,n,d,model,wall_time_train,process_time_train,wall_time_sample,process_time_sample
+0,1000,15,CTABGAN_cpu,275.0076011249985,6386.218615363003,0.4732609800012142,9.612543912953697
