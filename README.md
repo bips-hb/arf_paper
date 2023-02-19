@@ -1,7 +1,7 @@
 # Adversarial Random Forests
 Code and materials to reproduce paper "Adversarial Random Forests for Density Estimation and Generative Modelling", to appear in *Proceedings of the 26th International Conference on Artificial Intelligence and Statistics*. Preprint: https://arxiv.org/abs/2205.09435.
 
-The proposed method is implemented in the `arf` R package, available on [CRAN](https://cran.r-project.org/package=arf) and [Github](https://github.com/bips-hb/arf). To install the package from CRAN, run: 
+The proposed method is implemented in the `arf` R package, available on [CRAN](https://cran.r-project.org/package=arf) and [GitHub](https://github.com/bips-hb/arf). To install the package from CRAN, run: 
 ```R
 install.packages("arf")
 ```
