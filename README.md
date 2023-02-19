@@ -15,4 +15,5 @@ Directories included in this repository:
 * simulation: Directory containing code to reproduce visual examples and comparison with other tree-based approaches (Sec. 5.1)
 * density_benchmark: Directory containing code to reproduce comparison with alternative PCs in density estimation (Sec. 5.2)
 * generative_benchmark: Directory containing code to reproduce comparison with deep learning approaches in generative modeling (Sec. 5.2-5.3)
+* appx_mnist: Directory containing code to reproduce comparison with conditional GAN for MNIST28 (Appx. B.5)
 
