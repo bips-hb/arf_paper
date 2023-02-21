@@ -17,7 +17,8 @@ from rpy2.robjects import pandas2ri
 
 base = rpackages.importr('base')
 r = robjects.r
-r.source('../generative_ranger.R')
+## the following FORGE version is a plain R version such that the code works within the sdv framework of the Xu et al pipeline
+r.source('../environment_files/generative_ranger.R') ## do not use for other use cases, use arf package instead! 
 generative_ranger = robjects.globalenv['generative_ranger']
 pandas2ri.activate()
 doPar = rpackages.importr('doParallel')
