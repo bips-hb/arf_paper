@@ -10,8 +10,8 @@ library(data.table)
 #' @param n_new Number of synthetic observations to sample.
 #' @param oob Use only out-of-bag data to calculate leaf probabilities?
 #' @param dist Distribution to fit in terminal nodes to continuous data. Currently implemented: "normal", "exponential", "geometric", "lognormal", "Poisson", "pwc" (piecewise constant). 
-#' @param num_trees Number of trees.
-#' @param leaf_size Minimal leaf size.
+#' @param num_trees Number of trees 
+#' @param min_node_size Minimal node size
 #' @param ... Passed on to the ranger() call; use for 'max.depth', etc.
 #'
 #' @return data.frame with synthetic data.
@@ -20,12 +20,7 @@ library(data.table)
 #' @examples
 #' generative_ranger(x_real = iris, n_new = 100)
 generative_ranger <- function(x_real, x_synth = NULL, n_new, oob = FALSE, 
-                              dist = "normal", num_trees = 10, leaf_size = 5, 
-                              cat_num = 10, ...) {
-  
-  if (packageVersion("ranger") < "0.14.2") {
-    stop("ranger version >=0.14.2 is required to run this.")
-  }
+                              dist = "normal", num_trees = 10, min_node_size = 5, ...) {
   
   # Convert to data.frame
   orig_colnames <- colnames(x_real)
@@ -42,31 +37,21 @@ generative_ranger <- function(x_real, x_synth = NULL, n_new, oob = FALSE,
     x_real[, idx_logical] <- as.data.frame(lapply(x_real[, idx_logical, drop = FALSE], as.factor))
   }
   
-  # Convert numerics with less than cat_num unique values to factor (if requested)
-  if (!is.null(cat_num)) {
-    idx_catnum <- sapply(x_real, function(x) {is.numeric(x) && length(unique(x)) <= cat_num})
-    if (any(idx_catnum)) {
-      x_real[, idx_catnum] <- as.data.frame(lapply(x_real[, idx_catnum, drop = FALSE], as.factor))
-    }
-  }
-  
   factor_cols <- sapply(x_real, is.factor)
   factor_col_names <- names(factor_cols)[factor_cols]
   
   # If no synthetic data provided, sample from marginals
-  if (is.null(x_synth)) {
-    x_synth <- as.data.frame(lapply(x_real, function(x) {
-      sample(x, length(x), replace = TRUE)
-    }))
-  }
+  x_synth <- as.data.frame(lapply(x_real, function(x) {
+    sample(x, length(x), replace = TRUE)
+  }))
   
   # Merge real and synthetic data
   dat <- rbind(data.frame(y = 0, x_real), 
                data.frame(y = 1, x_synth))
   
   # Fit ranger to both data
-  rf <- ranger(y ~ ., dat, keep.inbag = TRUE, classification = TRUE, num.trees = num_trees, min.bucket = leaf_size, ...)
-
+  rf <- ranger(y ~ ., dat, keep.inbag = TRUE, classification = TRUE, num.trees = num_trees, min.node.size = min_node_size, ...)
+  
   # Get terminal nodes for all observations
   pred <- predict(rf, x_real, type = "terminalNodes")$predictions
   
@@ -93,13 +78,13 @@ generative_ranger <- function(x_real, x_synth = NULL, n_new, oob = FALSE,
       if (dist == "normal") {
         long[, list(mean = mean(value), sd = sd(value)), by = .(tree, nodeid, variable)]
       } else if (dist == "pwc") {
-        long[, list(min = min(value), max = max(value)), by = .(tree, nodeid, variable)]
+        long[, list(mean = mean(value)), by = .(tree, nodeid, variable)]
       } else {
         long[, as.list(MASS::fitdistr(value, dist)$estimate), by = .(tree, nodeid, variable)]
       }
     }
   }
-
+  
   # Calculate class probabilities for categorical data in all terminal nodes
   if (any(factor_cols)) {
     class_probs <- foreach(tree = 1:num_trees, .combine = rbind) %dopar% { 
@@ -154,8 +139,7 @@ generative_ranger <- function(x_real, x_synth = NULL, n_new, oob = FALSE,
       } else if (dist == "Poisson") {
         rpois(n = n_new, obs_params[variable == colname, lambda])
       } else if (dist == "pwc") {
-        rnorm(n = n_new, min = obs_params[variable == colname, min], 
-              max = obs_params[variable == colname, max])
+        rep(obs_params[variable == colname, mean], n_new)
       } else {
         stop("Unknown distribution.")
       }
@@ -168,11 +152,6 @@ generative_ranger <- function(x_real, x_synth = NULL, n_new, oob = FALSE,
   }
   if (any(idx_logical)) {
     data_new[, idx_logical] <- as.data.frame(lapply(data_new[, idx_logical, drop = FALSE], function(x) {x == "TRUE"}))
-  }
-  
-  # Convert numerics back (if requested)
-  if (!is.null(cat_num)) {
-    data_new[, idx_catnum] <- as.data.frame(lapply(data_new[, idx_catnum, drop = FALSE], function(x) {as.numeric(as.character(x))}))
   }
   
   # Use original column names
