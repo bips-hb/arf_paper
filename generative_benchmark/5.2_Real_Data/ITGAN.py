@@ -6,7 +6,7 @@ print(sys.path)
 sys.path.append("")
 print(sys.path)
 os.chdir("./ITGAN_adjusted2")
-import train_itgan as ITGAN ## unzip ITGAN_adjusted2.zip to access this module
+import train_itgan as ITGAN ## unzip ITGAN_adjusted2.zip in environment_files folder to access this module
 from util.data import load_dataset,get_metadata
 os.chdir("..")
 try:

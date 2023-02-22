@@ -9,7 +9,7 @@ print(sys.path)
 sys.path.append("")
 print(sys.path)
 
-from model.ctabgan import CTABGAN ## unzip CTABGAN.zip to get this module
+from model.ctabgan import CTABGAN ## unzip CTABGAN.zip in environment_files folder to get this module
 from model.eval.evaluation import get_utility_metrics,stat_sim,privacy_metrics
 import numpy as np
 import pandas as pd
