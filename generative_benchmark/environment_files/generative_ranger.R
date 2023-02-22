@@ -1,4 +1,4 @@
-
+# This is a plain R version of FORGE that is equivalent to arf with parameter delta = 0.5
 library(ranger)
 library(foreach)
 library(data.table)
