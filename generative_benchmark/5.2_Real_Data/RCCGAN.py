@@ -17,7 +17,7 @@ os.chdir("./RccGAN/RccGAN/ctgan")
 
 import numpy as np
 import pandas as pd
-from ctgan import CTGANSynthesizer
+from ctgan import CTGANSynthesizer ## unzip RCCGAN.zip to access this module
 from data import read_csv
 
 os.chdir("../../..")

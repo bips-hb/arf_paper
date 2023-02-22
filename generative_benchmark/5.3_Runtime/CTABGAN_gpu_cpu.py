@@ -15,7 +15,7 @@ import sys
 print(sys.path)
 sys.path.append("")
 print(sys.path)
-from model.ctabgan import CTABGAN
+from model.ctabgan import CTABGAN ## unzip CTABGAN.zip to access this module
 os.chdir("..")
 
 
