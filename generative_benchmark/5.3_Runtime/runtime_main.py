@@ -10,7 +10,8 @@ import rpy2.robjects.packages as rpackages
 from rpy2.robjects import pandas2ri
 pandas2ri.activate()
 r = robjects.r
-genrf = rpackages.importr('genrf')
+genrf = rpackages.importr('genrf') ## old name for arf package that uses delta = 0.5 
+## unzip genrf.zip in environment_files folder to access this module
 gen_rf = ()
 # assign registerDoParallel in grf_cpu.py file, therefore commented out here
 #doPar = rpackages.importr('doParallel')
